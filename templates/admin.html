@@ -2,88 +2,60 @@
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-
-```
-<!-- Bootstrap -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - NEU Library</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <style>
-    body {
-        background-color: #f5f7fa;
-    }
-
-    .stat-card {
-        border-radius: 12px;
-        background: white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        text-align: center;
-    }
-
-    .stat-card h2 {
-        font-weight: bold;
-    }
-
-    .table-container {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+body { background-color: #f5f7fa; }
+.stat-card { border-radius: 12px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; text-align: center; height: 100%; }
+.stat-card h2 { font-weight: bold; color: #006400; }
+.table-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 </style>
-```
-
 </head>
-
 <body>
-
-<div class="container mt-4">
-
-```
-<!-- HEADER -->
-<div class="header mb-4">
-    <h2>📊 Admin Dashboard</h2>
-    <a href="/logout" class="btn btn-danger">Logout</a>
+<nav class="navbar navbar-dark bg-dark mb-4">
+<div class="container">
+<a class="navbar-brand" href="#">NEU Library Admin</a>
+<div>
+<a href="/switch_role/user" class="btn btn-outline-light btn-sm">Switch to User View</a>
+<a href="/logout" class="btn btn-danger btn-sm">Logout</a>
 </div>
+</div>
+</nav>
 
-<!-- STATS -->
+<div class="container">
+<!-- STATS CARDS -->
 <div class="row mb-4">
-
-    <div class="col-md-4">
-        <div class="stat-card p-3">
-            <small>DAILY VISITS</small>
-            <h2>{{ daily_count }}</h2>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="stat-card p-3">
-            <small>WEEKLY VISITS</small>
-            <h2>{{ weekly_count }}</h2>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="stat-card p-3">
-            <small>MONTHLY VISITS</small>
-            <h2>{{ monthly_count }}</h2>
-        </div>
-    </div>
-
+<div class="col-md-4">
+<div class="stat-card">
+<h6>Daily Visitors</h6>
+<h2>{{ daily_count }}</h2>
+</div>
+</div>
+<div class="col-md-4">
+<div class="stat-card">
+<h6>Weekly Visitors</h6>
+<h2>{{ weekly_count }}</h2>
+</div>
+</div>
+<div class="col-md-4">
+<div class="stat-card">
+<h6>Range Total (Filtered)</h6>
+<h2>{{ logs|length }}</h2>
+</div>
+</div>
 </div>
 
 <!-- FILTERS -->
 <div class="table-container mb-4">
-    <form method="GET" class="row g-2">
-
+    <form method="GET" action="/admin" class="row g-3">
         <div class="col-md-3">
+            <label class="form-label">College</label>
+            <input type="text" name="college" class="form-control" placeholder="e.g. CICS">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Reason</label>
             <select name="reason" class="form-select">
                 <option value="">All Reasons</option>
                 <option value="Reading">Reading</option>
@@ -91,79 +63,47 @@
                 <option value="Computer Use">Computer Use</option>
             </select>
         </div>
-
         <div class="col-md-3">
-            <input type="text" name="college" class="form-control" placeholder="College">
-        </div>
-
-        <div class="col-md-2">
-            <select name="is_employee" class="form-select">
-                <option value="">All</option>
-                <option value="true">Employee</option>
-                <option value="false">Student</option>
-            </select>
-        </div>
-
-        <div class="col-md-2">
+            <label class="form-label">Start Date</label>
             <input type="date" name="start" class="form-control">
         </div>
-
-        <div class="col-md-2">
+        <div class="col-md-3">
+            <label class="form-label">End Date</label>
             <input type="date" name="end" class="form-control">
         </div>
-
-        <div class="col-md-12 mt-2">
-            <button class="btn btn-success w-100">Apply Filters</button>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
         </div>
-
     </form>
 </div>
 
 <!-- TABLE -->
 <div class="table-container">
-
-    <h5 class="mb-3">Visitor Logs</h5>
-
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-
-            <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>College</th>
-                    <th>Reason</th>
-                    <th>Employee</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for log in logs %}
-                <tr>
-                    <td>{{ log.name }}</td>
-                    <td>{{ log.email }}</td>
-                    <td>{{ log.college }}</td>
-                    <td>{{ log.reason }}</td>
-                    <td>
-                        {% if log.is_employee %}
-                            ✅ Employee
-                        {% else %}
-                            🎓 Student
-                        {% endif %}
-                    </td>
-                    <td>{{ log.visit_date }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-    </div>
-
-</div>
-```
-
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>College</th>
+                <th>Reason</th>
+                <th>Role</th>
+                <th>Date & Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.name }}</td>
+                <td>{{ log.college }}</td>
+                <td>{{ log.reason }}</td>
+                <td>{{ "Employee" if log.is_employee else "Student" }}</td>
+                <td>{{ log.visit_date.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
+
+</div>
 </body>
 </html>
