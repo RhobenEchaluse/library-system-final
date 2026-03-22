@@ -14,7 +14,7 @@ app.secret_key = "supersecretkey"
 
 
 # 🔗 MongoDB Connection
-client = MongoClient("mongodb+srv://user1:Echaluse@cluster0.e9xpwkj.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://user1:Echaluse@cluster0.e9xpwkj.mongodb.net/?appName=Cluster0")
 db = client["neu_library"]
 
 users_col = db["users"]
